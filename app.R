@@ -48,8 +48,8 @@ server <- function(input, output) {
         index <- 3;
       }
       
-      card <- tags$div(class = 'card h-100',style = 'border-radius: 10px;', tags$div(class = 'card-body', tags$h5(class = 'card-title',hd[x]), tags$p(class = 'card-text','hd[x]'),tags$a(href = refurls[x],class="btn btn-primary")))
-      row[[index]] <- list( column(4, card ,class = 'container p-1'));
+      card <- tags$div(class = 'card h-100 p-1',style = 'border-radius: 10px;', tags$div(class = 'card-body', tags$h5(class = 'card-title',hd[x]), tags$p(class = 'card-text','hd[x]')),tags$div(class = 'p-4',tags$a(href = refurls[x],tags$img(src = 'toi.png',class = 'rounded'))))
+      row[[index]] <- list( column(4, card ,class = 'container'));
       if(x%%3 == 0){
         rows[[x%/%3]] <- list(fluidRow(row));
       }
