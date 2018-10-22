@@ -48,7 +48,7 @@ server <- function(input, output) {
         index <- 3;
       }
       
-      card <- tags$div(class = 'card h-100', tags$div(class = 'card-body', tags$h5(class = 'card-title','Business'), tags$p(class = 'card-text',hd[x]),tags$a(href = refurls[x],class="btn btn-primary")))
+      card <- tags$div(class = 'card h-100',style = 'border-radius: 10px;', tags$div(class = 'card-body', tags$h5(class = 'card-title',hd[x]), tags$p(class = 'card-text','hd[x]'),tags$a(href = refurls[x],class="btn btn-primary")))
       row[[index]] <- list( column(4, card ,class = 'container p-1'));
       if(x%%3 == 0){
         rows[[x%/%3]] <- list(fluidRow(row));
