@@ -28,6 +28,10 @@ ui <- fluidPage(tags$head(
       src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js",
       integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4",
       crossorigin="anonymous"
+    ),
+    tags$meta(
+      name="viewport",
+      content="width=device-width, initial-scale=1.0"
     )
   )),
   #tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.css")),
@@ -49,8 +53,9 @@ server <- function(input, output) {
         index <- 3;
       }
       
-      card <- tags$div(class = 'card h-100',style = 'border-radius: 10px;', tags$div(class = 'card-body d-flex flex-column', tags$h5(class = 'card-title',hd[x]), tags$p(class = 'card-text',nchar(content[[x]])),tags$a(href = refurls[x],tags$img(src='toi.png',class = 'rounded')) ))
-      row[[index]] <- list( column(4, card ,class = 'container p-1'));
+      card <- tags$div(class = 'card h-100',style = 'border-radius: 10px;', tags$div(class = 'card-body', tags$h5(class = 'card-title',hd[x]), tags$p(class = 'card-text',nchar(content[[x]])),tags$a(href = refurls[x],tags$img(src='toi.png',class = 'rounded')) ))
+      row[[index]] <- tags$div(class = 'col-sm col-xs-12 container p-1',card)
+      #list( column(4, card ,class = 'container p-1'));
       if(x%%3 == 0){
         rows[[x%/%3]] <- list(fluidRow(row));
       }
