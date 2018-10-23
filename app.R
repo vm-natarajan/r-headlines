@@ -32,12 +32,13 @@ ui <- fluidPage(tags$head(
   )),
   #tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.css")),
   htmlOutput('op')
-  )
+)
 # Define server logic required to draw a histogram
 server <- function(input, output) {
   data <- read.csv(file = 'stories.csv',stringsAsFactors = FALSE)
   hd <- data$title;
-  refurls <- data$url
+  refurls <- data$url;
+  content <- data$content;
   size <- length(hd);
   rows <- vector("list",(size/3))   
   output$op <- renderUI({
@@ -48,8 +49,8 @@ server <- function(input, output) {
         index <- 3;
       }
       
-      card <- tags$div(class = 'card h-100 p-1',style = 'border-radius: 10px;', tags$div(class = 'card-body', tags$h5(class = 'card-title',hd[x]), tags$p(class = 'card-text','hd[x]')),tags$div(class = 'p-4',tags$a(href = refurls[x],tags$img(src = 'toi.png',class = 'rounded'))))
-      row[[index]] <- list( column(4, card ,class = 'container'));
+      card <- tags$div(class = 'card h-100',style = 'border-radius: 10px;', tags$div(class = 'card-body d-flex flex-column', tags$h5(class = 'card-title',hd[x]), tags$p(class = 'card-text',nchar(content[[x]])),tags$a(href = refurls[x],tags$img(src='toi.png',class = 'rounded')) ))
+      row[[index]] <- list( column(4, card ,class = 'container p-1'));
       if(x%%3 == 0){
         rows[[x%/%3]] <- list(fluidRow(row));
       }
@@ -60,4 +61,3 @@ server <- function(input, output) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
-
