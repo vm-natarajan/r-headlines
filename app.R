@@ -48,12 +48,20 @@ server <- function(input, output) {
   output$op <- renderUI({
     row <- vector("list",3)
     for(x in c(1:size)) {
+      
+      text <- as.character(content[[x]]) %>% strsplit('\n')
+      
+      words <- data_frame(text = text[[1]]) %>% filter(text != '') %>% unnest_tokens(words,text)
+      
+      time <- floor( nrow(words)/ 200 )
+      
       index <- x%%3
+      
       if(index == 0){
         index <- 3;
       }
       
-      card <- tags$div(class = 'card h-100',style = 'border-radius: 10px;', tags$div(class = 'card-body', tags$h5(class = 'card-title',hd[x]), tags$p(class = 'card-text',nchar(content[[x]])),tags$a(href = refurls[x],tags$img(src='toi.png',class = 'rounded')) ))
+      card <- tags$div(class = 'card h-100',style = 'border-radius: 10px;', tags$div(class = 'card-body', tags$h5(class = 'card-title',hd[x]), tags$p(class = 'card-text',paste0(nchar(content[[x]])),' - ',time),tags$a(href = refurls[x],tags$img(src='toi.png',class = 'rounded')) ))
       row[[index]] <- tags$div(class = 'col-sm col-xs-12 container p-1',card)
       #list( column(4, card ,class = 'container p-1'));
       if(x%%3 == 0){
