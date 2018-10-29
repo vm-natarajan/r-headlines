@@ -23,6 +23,10 @@ ui <- fluidPage(tags$head(
       integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy",
       crossorigin="anonymous"
     ),
+    tags$link(
+      rel="stylesheet",
+      href="blog.css"
+    ),
     tags$script(
       src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js",
       integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q",
@@ -37,46 +41,40 @@ ui <- fluidPage(tags$head(
       name="viewport",
       content="width=device-width, initial-scale=1.0"
     )
-  )),
-  htmlOutput('op'),
-  plotOutput('plot')
+  )),   htmlOutput("inc")
+  #includeHTML(path = 'index.html')
 )
+
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+  
   data <- read.csv(file = 'stories.csv',stringsAsFactors = FALSE)
   hd <- data$title;
   refurls <- data$url;
   content <- data$content;
   size <- length(hd);
-  rows <- vector("list",(size/3))   
-  output$op <- renderUI({
-    row <- vector("list",3)
-    for(x in c(1:size)) {
-      
-      text <- unlist(as.character(content[[x]]) %>% strsplit('\n'))
-      data <- data_frame(text = text) %>% filter(text!='') %>% mutate(line = c(1:length(text))) %>% unnest_tokens(word,text) %>% inner_join(afinn,by = 'word') %>% group_by(line) %>% summarise(sum = sum(score)) %>% mutate( index = 1,color = ifelse(sum > 0,'green','red')) 
-      words <- data_frame(text = text) %>% filter(text != '') %>% unnest_tokens(words,text)
-      time <- floor( nrow(words)/ 200 )
-      index <- x%%3
-      
-      ggplot(data = data,aes(x = line,y = index , fill=color)) + geom_bar(stat="identity") + scale_fill_manual( values = c("green" = "mediumseagreen", "red" = "indianred")) + theme_void()  + theme(legend.position = "none")
-      fileName <- paste0('www/','grp','_',x,'.png');
-      ggsave(file = fileName);
-      image <- image_trim(image_read(path = fileName));
-      image <- image_crop(image = image, "3071x150");
-      image_write(path = fileName,image = image);
-      if(index == 0){
-        index <- 3;
-      }
-      
-      card <- tags$div(class = 'card h-100',style = 'border-radius: 10px;', tags$div(class = 'card-body', tags$h5(class = 'card-title',hd[x]), tags$img(src = paste0('grp','_',x,'.png'),class="img-fluid"),tags$div(tags$a(href = refurls[x],tags$img(src='toi.png',class = 'rounded')),img(src='green.png',class = 'rounded' )   )))
-      row[[index]] <- tags$div(class = 'col-sm col-xs-12 container p-1',card)
-      if(x%%3 == 0){
-        rows[[x%/%3]] <- list(fluidRow(row));
-      }
-    }
-    return(rows);
-  })
+  
+  getPage<-function() {
+    
+    header <- includeHTML(path = 'html/header.html');
+    menus <- includeHTML(path = 'html/menus.html');
+    jumbotron <- includeHTML(path = 'html/jumbotron.html');
+    
+    cards <- lapply(c(1:size), function(X){
+      details = list(tags$strong(class = 'd-inline-block mb-2 text-success','Design'),tags$h4(class='mb-0',hd[X]),tags$div(class = 'mb-1 text-muted','Nov 11'),tags$p(class = 'card-text mb-auto',paste0(substr(content[X],start = 1,stop = 97),'...')),tags$a(href=refurls[X],'Continue reading'));
+      cardId[[X]] <- tags$div(class = 'col-md-6',tags$div(class = 'card flex-md-row mb-4 shadow-sm h-md-250',tags$div(class = 'card-body d-flex flex-column align-items-start',details)))
+      return(cardId[[X]]);
+    })
+    
+    footer <- includeHTML(path = 'html/footer.html');
+    cardholder <- tags$div(cards,class = 'row mb-2');
+    container <- tags$div(header,menus,jumbotron,cardholder,footer,class = 'container')
+    return(container);
+    
+  }
+  
+  output$inc<-renderUI({getPage()})
+  
 }
 
 # Run the application 
