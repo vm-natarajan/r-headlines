@@ -54,6 +54,7 @@ server <- function(input, output) {
   refurls <- data$url;
   content <- data$description;
   section <- data$section;
+  pub_date <- format(as.Date(data$date,format = "%m-%d-%Y"),'%b %d');
   size <- length(hd);
   cardId <- vector("list",size)  
   getPage<-function() {
@@ -63,9 +64,11 @@ server <- function(input, output) {
     jumbotron <- includeHTML(path = 'html/jumbotron.html');
     
     cards <- lapply(c(1:size), function(X){
-      details = list(tags$strong(class = 'd-inline-block mb-2 text-success',section[X]),tags$h4(class='mb-0',hd[X]),tags$div(class = 'mb-1 text-muted','Nov 11'),tags$p(class = 'card-text mb-auto',content[X]),tags$a(href=refurls[X],'Continue reading'));
-      cardId[[X]] <- tags$div(class = 'col-md-6',tags$div(class = 'card flex-md-row mb-4 shadow-sm h-md-250',tags$div(class = 'card-body d-flex flex-column align-items-start',details)))
+      
+      details = list( tags$div(class = 'container d-flex justify-content-between p-0' ,tags$a(href = section[X], tags$strong(class = 'd-inline-block mb-2 text-success',section[X])),tags$div(class = 'mb-1 text-muted',pub_date[X]) ) , tags$h4(class='mb-0',hd[X]),tags$p(class = 'card-text mb-auto', style = 'font-size: 14px;',content[X]),tags$a(href=refurls[X],'Continue reading'));
+      cardId[[X]] <- tags$div(class = 'col-md-6',tags$div(class = 'card flex-md-row mb-4 shadow-sm h-md-250',tags$div(class = 'card-body d-flex flex-column align-items-start p-3',details)))
       return(cardId[[X]]);
+      
     })
     
     footer <- includeHTML(path = 'html/footer.html');
