@@ -5,9 +5,9 @@ account: headlines
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 526639
-bundleId: 1654467
+bundleId: 1671021
 url: https://headlines.shinyapps.io/r-headlines/
-when: 1540153085.15409
+when: 1540859541.87834
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: www
+ignoredFiles: stories.csv

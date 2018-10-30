@@ -13,6 +13,7 @@ library(dplyr)
 library(tidyr)
 library(tidytext)
 library(magick)
+library(rdrop2)
 # Define UI for application that draws a histogram
 ui <- fluidPage(tags$head(
   tagList(
@@ -47,13 +48,14 @@ ui <- fluidPage(tags$head(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-  
-  data <- read.csv(file = 'stories.csv',stringsAsFactors = FALSE)
+  drop_auth(rdstoken = 'auth/token.rds');
+  data <- drop_read_csv("stories/td.csv",stringsAsFactors = FALSE);
   hd <- data$title;
   refurls <- data$url;
-  content <- data$content;
+  content <- data$description;
+  section <- data$section;
   size <- length(hd);
-  
+  cardId <- vector("list",size)  
   getPage<-function() {
     
     header <- includeHTML(path = 'html/header.html');
@@ -61,7 +63,7 @@ server <- function(input, output) {
     jumbotron <- includeHTML(path = 'html/jumbotron.html');
     
     cards <- lapply(c(1:size), function(X){
-      details = list(tags$strong(class = 'd-inline-block mb-2 text-success','Design'),tags$h4(class='mb-0',hd[X]),tags$div(class = 'mb-1 text-muted','Nov 11'),tags$p(class = 'card-text mb-auto',paste0(substr(content[X],start = 1,stop = 97),'...')),tags$a(href=refurls[X],'Continue reading'));
+      details = list(tags$strong(class = 'd-inline-block mb-2 text-success',section[X]),tags$h4(class='mb-0',hd[X]),tags$div(class = 'mb-1 text-muted','Nov 11'),tags$p(class = 'card-text mb-auto',content[X]),tags$a(href=refurls[X],'Continue reading'));
       cardId[[X]] <- tags$div(class = 'col-md-6',tags$div(class = 'card flex-md-row mb-4 shadow-sm h-md-250',tags$div(class = 'card-body d-flex flex-column align-items-start',details)))
       return(cardId[[X]]);
     })
