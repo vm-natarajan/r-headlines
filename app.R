@@ -54,7 +54,7 @@ server <- function(input, output) {
   refurls <- data$url;
   content <- data$description;
   section <- data$section;
-  pub_date <- format(as.Date(data$date,format = "%m-%d-%Y"),'%b %d');
+  pub_date <- format(as.Date(data$date,format = "%m/%d/%Y"),'%b %d');
   size <- length(hd);
   cardId <- vector("list",size)  
   getPage<-function() {
