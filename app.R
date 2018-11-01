@@ -7,13 +7,13 @@
 #    http://shiny.rstudio.com/
 #
 
-library(shiny)
-library(ggplot2)
-library(dplyr)
-library(tidyr)
-library(tidytext)
-library(magick)
-library(rdrop2)
+library(shiny);
+library(ggplot2);
+library(dplyr);
+library(tidyr);
+library(tidytext);
+library(magick);
+library(rdrop2);
 # Define UI for application that draws a histogram
 ui <- fluidPage(tags$head(
   tagList(
@@ -65,7 +65,7 @@ server <- function(input, output) {
     
     cards <- lapply(c(1:size), function(X){
       
-      details = list( tags$div(class = 'container d-flex justify-content-between p-0' ,tags$a(href = section[X], tags$strong(class = 'd-inline-block mb-2 text-success',section[X])),tags$div(class = 'mb-1 text-muted',pub_date[X]) ) , tags$h4(class='mb-0',hd[X]),tags$p(class = 'card-text mb-auto', style = 'font-size: 14px;',content[X]),tags$a(href=refurls[X],'Continue reading'));
+      details = list( tags$div(class = 'container d-flex justify-content-between p-0' ,tags$a(href = section[X], tags$strong(class = 'd-inline-block mb-2 text-success',section[X])),tags$div(class = 'mb-1 text-muted',pub_date[X]) ) , tags$h4(class='mb-1',hd[X]),tags$p(class = 'card-text mb-auto', style = 'font-size: 14px;',content[X]),tags$a(href=refurls[X],'Continue reading'));
       cardId[[X]] <- tags$div(class = 'col-md-6',tags$div(class = 'card flex-md-row mb-4 shadow-sm h-md-250',tags$div(class = 'card-body d-flex flex-column align-items-start p-3',details)))
       return(cardId[[X]]);
       
