@@ -14,8 +14,9 @@ library(tidyr);
 library(tidytext);
 library(magick);
 library(rdrop2);
+library(shinyjs);
 # Define UI for application that draws a histogram
-ui <- fluidPage(tags$head(
+ui <- fluidPage( useShinyjs(),tags$head(
   tagList(
     suppressDependencies("bootstrap"),
     tags$link(
@@ -42,7 +43,8 @@ ui <- fluidPage(tags$head(
       name="viewport",
       content="width=device-width, initial-scale=1.0"
     )
-  )),   htmlOutput("inc")
+  )),htmlOutput("inc")
+  ,htmlOutput("others")
   #includeHTML(path = 'index.html')
 )
 
@@ -50,17 +52,19 @@ ui <- fluidPage(tags$head(
 server <- function(input, output) {
   drop_auth(rdstoken = 'auth/token.rds');
   data <- drop_read_csv("stories/td.csv",stringsAsFactors = FALSE);
-  hd <- data$title;
-  refurls <- data$url;
-  content <- data$description;
-  section <- data$section;
-  pub_date <- format(as.Date(data$date,format = "%m/%d/%Y"),'%b %d');
-  size <- length(hd);
-  cardId <- vector("list",size)  
-  getPage<-function() {
+   
+  getPage<-function(dataset = data) {
+    
+    hd <- data$title;
+    refurls <- data$url;
+    content <- data$description;
+    section <- data$section;
+    pub_date <- format(as.Date(data$date,format = "%m/%d/%Y"),'%b %d');
+    size <- length(hd);
+    cardId <- vector("list",size)
     
     header <- includeHTML(path = 'html/header.html');
-    menus <- includeHTML(path = 'html/menus.html');
+    menus <- tags$nav(class = 'nav d-flex justify-content-between',list(actionLink('world','World',class='p-2 text-muted'),actionLink('india','India',class='p-2 text-muted'),actionLink('technology','Technology',class='p-2 text-muted'),actionLink('top-news','Top News',class='p-2 text-muted'),actionLink('business','Business',class='p-2 text-muted'),actionLink('politics','Politics',class='p-2 text-muted'),actionLink('science','Science',class='p-2 text-muted'),actionLink('health','Health',class='p-2 text-muted'),actionLink('life-style','Life Style',class='p-2 text-muted'),actionLink('travel','Travel',class='p-2 text-muted')))
     jumbotron <- includeHTML(path = 'html/jumbotron.html');
     
     cards <- lapply(c(1:size), function(X){
@@ -78,7 +82,19 @@ server <- function(input, output) {
     
   }
   
-  output$inc<-renderUI({getPage()})
+  observeEvent(input$world, {
+    data <- data[data$section == 'world',];
+    hide("inc");
+    output$others<- output$inc<-renderUI({getPage(dataset = data)})
+  })
+  
+  observeEvent(input$india, {
+    data <- data[data$section == 'india',];
+    hide("inc");
+    output$others<- output$inc<-renderUI({getPage(dataset = data)})
+  })
+  
+  output$inc<-renderUI({getPage(data)})
   
 }
 
